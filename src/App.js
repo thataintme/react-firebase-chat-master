@@ -82,6 +82,7 @@ function ChatRoom() {
     const { uid, photoURL } = auth.currentUser;
 
     await messagesRef.add({
+      uname: auth.currentUser.displayName,
       text: formValue,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       uid,
@@ -113,14 +114,18 @@ function ChatRoom() {
 
 
 function ChatMessage(props) {
-  const { text, uid, photoURL } = props.message;
+  const { uname, text, uid, photoURL } = props.message;
 
   const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
 
   return (<>
+
     <div className={`message ${messageClass}`}>
-      <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} />
-      <p>{text}</p>
+      <img src={photoURL || 'https://photos.app.goo.gl/mJHTe74MuLibh4Po6'} />
+        <div className={'usernamedisplay'}>
+          <p className={'unam'}>{uname}</p>
+          <p>{text}</p>
+        </div>
     </div>
   </>)
 }

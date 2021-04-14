@@ -115,16 +115,23 @@ ul, li {
   list-style: none;
 }
 
+.usernamedisplay {
+  margin-bottom: 12px;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
 p {
   max-width: 500px;
-  margin-bottom: 12px;
+  margin: 0px;
   line-height: 24px;
   padding: 10px 20px;
-  border-radius: 25px;
   position: relative;
   color: white;
   text-align: center;
 }
+
+
 
 .message {
   display: flex;
@@ -141,6 +148,16 @@ p {
   background: #0b93f6;
   align-self: flex-end;
 }
+
+p.unam {
+  color: #5274e4fa;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align:end;
+  background-color: #e5e5ea;
+  padding: 3px 10px;
+}
+
 .received p {
   background: #e5e5ea;
   color: black;
