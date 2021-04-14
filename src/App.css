@@ -1,5 +1,5 @@
 body {
-  background-color: #282c34;
+  background-color: #0a2e09;
 }
 
 .App {
@@ -9,7 +9,7 @@ body {
 }
 
 .App header {
-  background-color: #181717;
+  background-color: #004912;
   height: 10vh;
   min-height: 50px;
   color: white;
@@ -30,7 +30,7 @@ body {
   flex-direction: column;
   justify-content: center;
   min-height: 100vh;
-  background-color: rgb(40, 37, 53);
+  background-color: rgb(79, 124, 75);
 }
 
 main {
@@ -47,18 +47,18 @@ main::-webkit-scrollbar {
 }
 
 main::-webkit-scrollbar-track {
-  background: #1e1e24;
+  background: #1a3a19;
 }
 
 main::-webkit-scrollbar-thumb {
-  background: #6649b8;
+  background: #2eb40d;
 }
 
 form {
   height: 10vh;
   position: fixed;
   bottom: 0;
-  background-color: rgb(24, 23, 23);
+  background-color: rgb(93, 35, 148);
   width: 100%;
   max-width: 728px;
   display: flex;
@@ -75,7 +75,7 @@ input {
   line-height: 1.5;
   width: 100%;
   font-size: 1.5rem;
-  background: rgb(58, 58, 58);
+  background: rgb(43, 56, 46);
   color: white;
   outline: none;
   border: none;
@@ -83,7 +83,7 @@ input {
 }
 
 button {
-  background-color: #282c34; /* Green */
+  background-color: #a02a2a; /* Green */
   border: none;
   color: white;
   padding: 15px 32px;
