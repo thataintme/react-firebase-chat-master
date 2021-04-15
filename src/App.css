@@ -116,19 +116,21 @@ ul, li {
 }
 
 .usernamedisplay {
+  max-width: 500px;
   margin-bottom: 12px;
   border-radius: 25px;
   overflow: hidden;
 }
 
 p {
-  max-width: 500px;
+
   margin: 0px;
   line-height: 24px;
   padding: 10px 20px;
   position: relative;
   color: white;
-  text-align: center;
+  text-align: left;
+  word-wrap: break-word;
 }
 
 
@@ -161,6 +163,13 @@ p.unam {
 .received p {
   background: #e5e5ea;
   color: black;
+}
+
+.received p.unam {
+  color: #e5e5ea;
+  text-align:start;
+  background-color: #5274e4fa; 
+
 }
 
 img {
