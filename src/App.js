@@ -59,11 +59,13 @@ function App() {
 
 function SignIn() {
 
-
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider);
   }
+
+  
+
 
   return (
     <>
@@ -127,8 +129,23 @@ function ChatRoom() {
 
   const sendMessage = async (e) => {
     e.preventDefault();
+    /*if(messages.length == 0) 
+    {
+      usersRef.add({
+        email: auth.currentUser.email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        name: auth.currentUser.name
+      })
+    }*/
 
     const { uid, photoURL } = auth.currentUser;
+    if(messages.length == 0) 
+    {
+      await firestore.collection("_users").doc(auth.currentUser.email).set({
+        email: auth.currentUser.email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+    }
 
     await messagesRef.add({
       uname: auth.currentUser.displayName,
