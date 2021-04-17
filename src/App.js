@@ -99,13 +99,13 @@ function RoomSelect() {
       <div className="emailList">
         <img src={item.photoURL} />
         {item.email}
-        <img src={item.status} />
       </div>
       </Link>
     ))}
 
   </div>
   )
+  //<img src={item.status} />
 }
 
 
