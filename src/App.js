@@ -143,7 +143,8 @@ function ChatRoom() {
     {
       await firestore.collection("_users").doc(auth.currentUser.email).set({
         email: auth.currentUser.email,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: "https://photos.app.goo.gl/Q1t9gsQuUCz2VZtu9"
       })
     }
 
