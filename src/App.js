@@ -30,6 +30,7 @@ const analytics = firebase.analytics();
 function App() {
 
   const [user] = useAuthState(auth);
+  
 
   return (
     <div className="App">
@@ -83,24 +84,24 @@ function SignOut() {
 }
 
 function RoomSelect() {
-  return <Redirect to={auth.currentUser.email} />
+  const usersRef = firestore.collection("_users");
+  const query = usersRef;
+  const [users] = useCollectionData(query, { idField: 'email' });
+  console.log(users)
+
 
   const [room,setRoom] = useState("");
   return (
-    <div>
-      <h3>
-      Enter Room ID {auth.currentUser.email}
-      </h3>
-      <form>
-        <input value={room} onChange={(e) => setRoom(e.target.value)} />
+  <div>
+    {users?.map((item) => (
+      <Link to={item.email} >
+      <h1>
+        {item.email}
+      </h1>
+      </Link>
+    ))}
 
-        <Link to={"/"+room}>
-          <button className>
-            Join room
-          </button>
-        </Link>
-      </form>
-    </div>
+  </div>
   )
 }
 
