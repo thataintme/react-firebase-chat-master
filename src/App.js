@@ -145,6 +145,7 @@ function ChatRoom() {
         email: auth.currentUser.email,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         status: "https://photos.app.goo.gl/Q1t9gsQuUCz2VZtu9"
+        photoURL: auth.currentUser.photoURL
       })
     }
 
