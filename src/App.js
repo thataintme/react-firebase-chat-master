@@ -35,7 +35,7 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>Chat with us💬</h1>
+        <h1>Chat with them💬</h1>
         <SignOut />
       </header>
 
@@ -146,10 +146,10 @@ function ChatRoom() {
     dummy.current.scrollIntoView({ behavior: 'smooth' });
   }
 
-  if (dbname != auth.currentUser.email)
+/*  if (dbname != auth.currentUser.email)
   {
     return <Redirect to={auth.currentUser.email} />
-  }
+  }*/
 
   return (<>
     <main>
