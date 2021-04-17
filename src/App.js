@@ -97,8 +97,9 @@ function RoomSelect() {
     {users?.map((item) => (
       <Link to={item.email} >
       <div className="emailList">
+        <img src={item.photoURL} />
         {item.email}
-        {item.status}
+        <img src={item.status} />
       </div>
       </Link>
     ))}
