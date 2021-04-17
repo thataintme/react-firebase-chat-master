@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 
 import firebase from 'firebase/app';
@@ -6,8 +6,11 @@ import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/analytics';
 
+import {BrowserRouter, Switch, Route, useParams, Link, Redirect} from 'react-router-dom';
+
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import useLocalStorage from './hooks/useLocaStorage';
 
 firebase.initializeApp({
   apiKey: "AIzaSyA3hAImaUfe30ISl0z5PMxjw9SloKT8KTE",
@@ -31,12 +34,23 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>Cloud Chatroom💬</h1>
+        <h1>Chat with us💬</h1>
         <SignOut />
       </header>
 
       <section>
-        {user ? <ChatRoom /> : <SignIn />}
+        {user ? <BrowserRouter>
+                  <Switch>
+                    <Route path='/:dbname'>
+                      <ChatRoom />
+                    </Route>
+
+                    <Route path='/'>
+                      <RoomSelect />
+                    </Route>
+                  </Switch>
+                </BrowserRouter>
+                : <SignIn />}
       </section>
 
     </div>
@@ -44,6 +58,7 @@ function App() {
 }
 
 function SignIn() {
+
 
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -53,11 +68,13 @@ function SignIn() {
   return (
     <>
       <button className="sign-in" onClick={signInWithGoogle}>Sign in with Google</button>
-      <p>Encryption part pending!</p>
+      <p>Click here to generate key</p>
+      
     </>
   )
-
 }
+
+
 
 function SignOut() {
   return auth.currentUser && (
@@ -65,15 +82,47 @@ function SignOut() {
   )
 }
 
+function RoomSelect() {
+  return <Redirect to={auth.currentUser.email} />
+
+  const [room,setRoom] = useState("");
+  return (
+    <div>
+      <h3>
+      Enter Room ID {auth.currentUser.email}
+      </h3>
+      <form>
+        <input value={room} onChange={(e) => setRoom(e.target.value)} />
+
+        <Link to={"/"+room}>
+          <button className>
+            Join room
+          </button>
+        </Link>
+      </form>
+    </div>
+  )
+}
+
 
 function ChatRoom() {
   const dummy = useRef();
-  const messagesRef = firestore.collection('messages');
+
+  const {dbname} = useParams();
+  const messagesRef = firestore.collection(dbname);
   const query = messagesRef.orderBy('createdAt');
-
   const [messages] = useCollectionData(query, { idField: 'id' });
-
   const [formValue, setFormValue] = useState('');
+
+  const [KEY, setKEY] = useLocalStorage("KEY")
+  useEffect(() => {
+    if(!KEY)
+    {
+      setKEY(Math.random());
+    }
+    // USE THE KEY HERE
+    console.log(KEY);
+  }, [KEY])
 
 
   const sendMessage = async (e) => {
@@ -91,6 +140,11 @@ function ChatRoom() {
 
     setFormValue('');
     dummy.current.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  if (dbname != auth.currentUser.email)
+  {
+    return <Redirect to={auth.currentUser.email} />
   }
 
   return (<>
