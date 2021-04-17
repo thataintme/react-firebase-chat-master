@@ -87,6 +87,7 @@ function RoomSelect() {
   const usersRef = firestore.collection("_users");
   const query = usersRef;
   const [users] = useCollectionData(query, { idField: 'email' });
+  const [statuses] = useCollectionData(query, { idField: 'status' });
   console.log(users)
 
 
@@ -95,9 +96,10 @@ function RoomSelect() {
   <div>
     {users?.map((item) => (
       <Link to={item.email} >
-      <h1>
+      <div className="emailList">
         {item.email}
-      </h1>
+        {item.status}
+      </div>
       </Link>
     ))}
 
