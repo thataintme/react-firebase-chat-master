@@ -144,7 +144,7 @@ function ChatRoom() {
       await firestore.collection("_users").doc(auth.currentUser.email).set({
         email: auth.currentUser.email,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        status: "https://photos.app.goo.gl/Q1t9gsQuUCz2VZtu9",
+        status: "https://lh3.googleusercontent.com/ZqtOV3QlnuiYt-xaV1hmIgM6iseu_3HIQ1bLfhAYvuyS9UedF0Gs0hFeJq_dbkxLxVjUv6FcYt6pR2W-kTu-iucLF3GyRFKM-_ZLc5H5EI7-x3YL-6A5V8MgNbrU13fO45e_MLCKF76W7AL_pdjSIU-YERA7QflRZKcRBg2XhOET5SGwqlqNUlm1NkeuFpDw_E4JbbS8SlfehjxlAT1euN9VlK313KF85cMU04um7zKxIOgOxAMCI2JtU-CK70ac9IYIKcUxgTSCSI1Xxu_j_11tohIFf7rUqqotHqT56AvklcWXiQJdZW9OYM2_W_3wwcdbutPH3j6xsSTIBz9PHg132lN06HYbl9qqc15bzKJaqPpg4zt_hHNSI-lwjjhmYMZftC85rQpaPbI5eTL7YCxNwKrBZCM1d9mcF0n8L3F9KRuXv8JbZRq03meZM7ddgnWZ8vDwwcn9mqUJ2VGmstcCcIuekSK6QL7WC3NFmrZyPPj1S3vhUKTA1cBDrLwRcg3LQrTOlyKA9LYZLVYTG1XJzAkVRPzzSixs60AUmuzbYe7QSf6dgVceRs1AOlDXi9KL3whd0GMFYfJbwBqotrRhcRC4QeyGALTLYxsfgyoOXLgP62UM-nx5PlPX6xwDQfSOset1QPmvMI9h9uWCrg7dkeaeunPsVOpEV1v8DJfQ5zrAyl0-GCqJk9NqMq1blp53L1JXtkgeYX57y0QO1qqa=s500-no?authuser=1",
         photoURL: auth.currentUser.photoURL
       })
     }
