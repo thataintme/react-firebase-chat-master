@@ -12,6 +12,10 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import useLocalStorage from './hooks/useLocaStorage';
 
+
+import aes256 from 'aes256';//---------------------------aes enc dector----------------
+var aesKey = 'This is default Key';
+
 firebase.initializeApp({
   apiKey: "AIzaSyA3hAImaUfe30ISl0z5PMxjw9SloKT8KTE",
   authDomain: "superchat-f279e.firebaseapp.com",
@@ -118,7 +122,7 @@ function ChatRoom() {
   const [messages] = useCollectionData(query, { idField: 'id' });
   const [formValue, setFormValue] = useState('');
 
-  const [KEY, setKEY] = useLocalStorage("KEY")
+  /*const [KEY, setKEY] = useLocalStorage("KEY")
   useEffect(() => {
     if(!KEY)
     {
@@ -126,7 +130,8 @@ function ChatRoom() {
     }
     // USE THE KEY HERE
     console.log(KEY);
-  }, [KEY])
+  }, [KEY])*/
+
 
 
   const sendMessage = async (e) => {
