@@ -12,19 +12,25 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import useLocalStorage from './hooks/useLocaStorage';
 
+import socket from './services/socket';
+import aes256 from 'aes256';
+
+
 firebase.initializeApp({
-  apiKey: "AIzaSyA3hAImaUfe30ISl0z5PMxjw9SloKT8KTE",
-  authDomain: "superchat-f279e.firebaseapp.com",
-  projectId: "superchat-f279e",
-  storageBucket: "superchat-f279e.appspot.com",
-  messagingSenderId: "21649455285",
-  appId: "1:21649455285:web:d0d4e68770137cc77226fc",
-  measurementId: "G-C439PF8EQF"
+  apiKey: "AIzaSyDlZ3lau-4mVu9upxehozUC7bNIs83GNmI",
+  authDomain: "acschat-ea681.firebaseapp.com",
+  projectId: "acschat-ea681",
+  storageBucket: "acschat-ea681.appspot.com",
+  messagingSenderId: "544409209642",
+  appId: "1:544409209642:web:6214a15348169c9956ac53",
+  measurementId: "G-51WN41WWXZ"
 })
 
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const analytics = firebase.analytics();
+var aesKey;
+var cipher = aes256.createCipher('This is default key');
 
 
 function App() {
@@ -117,6 +123,7 @@ function ChatRoom() {
   const [formValue, setFormValue] = useState('');
 
   const [KEY, setKEY] = useLocalStorage("KEY")
+
   useEffect(() => {
     if(!KEY)
     {
@@ -125,6 +132,14 @@ function ChatRoom() {
     // USE THE KEY HERE
     console.log(KEY);
   }, [KEY])
+
+  useEffect(() => {
+    console.log('useEffect()')
+    socket.on("getKey", data => {
+      console.log(data);
+      aesKey = data;
+    });
+  },[]);
 
 
   const sendMessage = async (e) => {
