@@ -12,14 +12,20 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import useLocalStorage from './hooks/useLocaStorage';
 
+import NodeRSA from 'node-rsa';
+var key = null;
+
+var encKey = null;
+var selectedClient = null;
+
 firebase.initializeApp({
-  apiKey: "AIzaSyA3hAImaUfe30ISl0z5PMxjw9SloKT8KTE",
-  authDomain: "superchat-f279e.firebaseapp.com",
-  projectId: "superchat-f279e",
-  storageBucket: "superchat-f279e.appspot.com",
-  messagingSenderId: "21649455285",
-  appId: "1:21649455285:web:d0d4e68770137cc77226fc",
-  measurementId: "G-C439PF8EQF"
+  apiKey: "AIzaSyDlZ3lau-4mVu9upxehozUC7bNIs83GNmI",
+  authDomain: "acschat-ea681.firebaseapp.com",
+  projectId: "acschat-ea681",
+  storageBucket: "acschat-ea681.appspot.com",
+  messagingSenderId: "544409209642",
+  appId: "1:544409209642:web:6214a15348169c9956ac53",
+  measurementId: "G-51WN41WWXZ"
 })
 
 const auth = firebase.auth();
@@ -30,11 +36,12 @@ const analytics = firebase.analytics();
 function App() {
 
   const [user] = useAuthState(auth);
+  
 
   return (
     <div className="App">
       <header>
-        <h1>Chat with us💬</h1>
+        <h1>Admin chat page💬</h1>
         <SignOut />
       </header>
 
@@ -59,13 +66,11 @@ function App() {
 
 function SignIn() {
 
+
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider);
   }
-
-  
-
 
   return (
     <>
@@ -85,25 +90,42 @@ function SignOut() {
 }
 
 function RoomSelect() {
-  return <Redirect to={auth.currentUser.email} />
+  const usersRef = firestore.collection("_users");
+  const query = usersRef;
+  const [users] = useCollectionData(query, { idField: 'email' });
+  const [statuses] = useCollectionData(query, { idField: 'status' });
+  console.log(users)
+
+  const [KEY, setKEY] = useLocalStorage("AdminPrivateKEY")
+  const [strKEY, setStrKey] = useLocalStorage("StrAdminPrivateKey")
+  useEffect(() => {
+    if(!KEY)
+    {
+      key = new NodeRSA({b:512});
+      //await //------------send public key to firebase------------
+      setKEY(key.exportKey('pkcs1-private-der'));
+      console.log('Here we set the private key in binary. now saving string');
+      setStrKey(key.exportKey('pkcs1-private-der').toString('base64'));
+    }
+    // USE THE KEY HERE
+    console.log(KEY);
+  }, [KEY])
 
   const [room,setRoom] = useState("");
   return (
-    <div>
-      <h3>
-      Enter Room ID {auth.currentUser.email}
-      </h3>
-      <form>
-        <input value={room} onChange={(e) => setRoom(e.target.value)} />
+  <div>
+    {users?.map((item) => (
+      <Link to={item.email} >
+      <div className="emailList">
+        <img src={item.photoURL} />
+        {item.email}
+      </div>
+      </Link>
+    ))}
 
-        <Link to={"/"+room}>
-          <button className>
-            Join room
-          </button>
-        </Link>
-      </form>
-    </div>
+  </div>
   )
+  //<img src={item.status} />
 }
 
 
@@ -115,55 +137,59 @@ function ChatRoom() {
   const query = messagesRef.orderBy('createdAt');
   const [messages] = useCollectionData(query, { idField: 'id' });
   const [formValue, setFormValue] = useState('');
+  
+  const [clientDetails, setClientDetails] = useState('')
 
-  const [KEY, setKEY] = useLocalStorage("KEY")
+  const [KEY, setKEY] = useLocalStorage("AdminPrivateKEY")
+  const [strKEY, setStrKey] = useLocalStorage("StrAdminPrivateKey")
   useEffect(() => {
     if(!KEY)
     {
-      setKEY(Math.random());
+      key = new NodeRSA({b:512});
+      //await //------------send public key to firebase------------
+      setKEY(key.exportKey('pkcs1-private-der'));
+      console.log('Here we set the private key in binary. now saving string');
+      setStrKey(key.exportKey('pkcs1-private-der').toString('base64'));
     }
     // USE THE KEY HERE
     console.log(KEY);
   }, [KEY])
 
 
+
   const sendMessage = async (e) => {
     e.preventDefault();
-    /*if(messages.length == 0) 
-    {
-      usersRef.add({
-        email: auth.currentUser.email,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        name: auth.currentUser.name
-      })
-    }*/
-
     const { uid, photoURL } = auth.currentUser;
-    if(messages.length == 0) 
-    {
-      await firestore.collection("_users").doc(auth.currentUser.email).set({
-        email: auth.currentUser.email,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        status: "https://lh3.googleusercontent.com/ZqtOV3QlnuiYt-xaV1hmIgM6iseu_3HIQ1bLfhAYvuyS9UedF0Gs0hFeJq_dbkxLxVjUv6FcYt6pR2W-kTu-iucLF3GyRFKM-_ZLc5H5EI7-x3YL-6A5V8MgNbrU13fO45e_MLCKF76W7AL_pdjSIU-YERA7QflRZKcRBg2XhOET5SGwqlqNUlm1NkeuFpDw_E4JbbS8SlfehjxlAT1euN9VlK313KF85cMU04um7zKxIOgOxAMCI2JtU-CK70ac9IYIKcUxgTSCSI1Xxu_j_11tohIFf7rUqqotHqT56AvklcWXiQJdZW9OYM2_W_3wwcdbutPH3j6xsSTIBz9PHg132lN06HYbl9qqc15bzKJaqPpg4zt_hHNSI-lwjjhmYMZftC85rQpaPbI5eTL7YCxNwKrBZCM1d9mcF0n8L3F9KRuXv8JbZRq03meZM7ddgnWZ8vDwwcn9mqUJ2VGmstcCcIuekSK6QL7WC3NFmrZyPPj1S3vhUKTA1cBDrLwRcg3LQrTOlyKA9LYZLVYTG1XJzAkVRPzzSixs60AUmuzbYe7QSf6dgVceRs1AOlDXi9KL3whd0GMFYfJbwBqotrRhcRC4QeyGALTLYxsfgyoOXLgP62UM-nx5PlPX6xwDQfSOset1QPmvMI9h9uWCrg7dkeaeunPsVOpEV1v8DJfQ5zrAyl0-GCqJk9NqMq1blp53L1JXtkgeYX57y0QO1qqa=s500-no?authuser=1",
-        photoURL: auth.currentUser.photoURL
-      })
-    }
+
+    //--------------------------------Get the client's public key and encrypt (myCopy)------------------
+    var clientKey = '';
+    await firestore.collection('_users').doc(dbname).get().then(function(doc) {
+      clientKey = doc.data().PublicKeyRSA;
+      console.log("Client's KEY ",clientKey);
+    });
+    
+    //-------------------------------encrypt for self (text)--------------------------------------------
+    var adminPublicKey = '';
+    await firestore.collection('Admin').doc('AdminPublicKey').get().then(function(doc) {
+      console.log("Admin's KEY ",doc.data().PublicKey);
+      adminPublicKey = doc.data().PublicKey;
+    });
+    
+    var cliEncKey = new NodeRSA(clientKey,'pkcs1-public');
+    var ClientsEncryptedMessage = cliEncKey.encrypt(formValue,'base64')
+    var adminEncKey = new NodeRSA(adminPublicKey,'pkcs1-public');
+    var AdminsEncryptedMessage = adminEncKey.encrypt(formValue,'base64');
 
     await messagesRef.add({
       uname: auth.currentUser.displayName,
-      text: formValue,
+      text: AdminsEncryptedMessage, //text is admin's copy, formvalue is value typed
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      myCopy: ClientsEncryptedMessage, //mycopy is clients copy
       uid,
       photoURL
     })
-
     setFormValue('');
     dummy.current.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  if (dbname != auth.currentUser.email)
-  {
-    return <Redirect to={auth.currentUser.email} />
   }
 
   return (<>
@@ -187,17 +213,36 @@ function ChatRoom() {
 
 
 function ChatMessage(props) {
-  const { uname, text, uid, photoURL } = props.message;
-
+  const { uname, text, uid, photoURL,myCopy } = props.message;
   const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
 
+  //------------------------------------DECRYPTING HERE--------------------------------------
+
+  const [strKEY, setStrKEY] = useLocalStorage("StrAdminPrivateKey")
+  useEffect(() => {
+    if(!strKEY)
+    {
+      key = new NodeRSA({b:512});
+      //await //------------send public key to firebase------------
+      setStrKEY(key.exportKey('private'));
+    }
+    // USE THE KEY HERE
+    console.log("decryption code reached: ",strKEY);
+  }, [strKEY])
+
+  //console.log("admin's private key here is")
+  //console.log(strKEY);
+  var decryptor = new NodeRSA(strKEY,'private')
+  const DecryptedMessage = decryptor.decrypt(text, 'utf8')
+
+  //betweek p's text is for admin's copy. myCopy is for client's copy
   return (<>
 
     <div className={`message ${messageClass}`}>
       <img src={photoURL || 'https://photos.app.goo.gl/mJHTe74MuLibh4Po6'} />
         <div className={'usernamedisplay'}>
           <p className={'unam'}>{uname}</p>
-          <p>{text}</p>
+          <p>{DecryptedMessage}</p>
         </div>
     </div>
   </>)
